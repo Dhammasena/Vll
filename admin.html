@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Night Owl VPN — Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-body">
+
+<div id="particles-js"></div>
+<div id="toast-container"></div>
+
+<!-- Admin Header -->
+<header class="admin-header">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <img src="https://z-cdn-media.chatglm.cn/files/b2f4cb73-33cd-4e5b-a706-f9e631497ccf.png?auth_key=1880225410-af0106e17d8e4b97b81c9fec4f9bc8e7-0-fcd8b6f1ac86b50c7433dc2e5db16da4" alt="Logo" style="height:40px;">
+            <h1 class="admin-title"><i class="fas fa-user-shield"></i> Admin Panel</h1>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <span id="adminEmail" style="color:var(--text-muted);font-size:0.85rem;"></span>
+            <a href="index.html" class="btn btn-outline btn-sm"><i class="fas fa-arrow-left"></i> Back to Site</a>
+            <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
+        </div>
+    </div>
+</header>
+
+<!-- Admin Content -->
+<main class="admin-main">
+    <div class="container">
+        <!-- Not Admin Message -->
+        <div id="notAdmin" style="display:none;" class="admin-denied">
+            <i class="fas fa-ban" style="font-size:3rem;color:var(--danger);"></i>
+            <h2>Access Denied</h2>
+            <p>You are not authorized to view this page. Only the admin can access this panel.</p>
+            <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="adminDashboard" style="display:none;">
+            <!-- Stats Row -->
+            <div class="admin-stats">
+                <div class="admin-stat-card">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <span class="admin-stat-number" id="totalUsers">0</span>
+                        <span class="admin-stat-label">Total Users</span>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <i class="fas fa-file-invoice"></i>
+                    <div>
+                        <span class="admin-stat-number" id="totalOrders">0</span>
+                        <span class="admin-stat-label">Total Orders</span>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <span class="admin-stat-number" id="pendingOrders">0</span>
+                        <span class="admin-stat-label">Pending</span>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <span class="admin-stat-number" id="activeOrders">0</span>
+                        <span class="admin-stat-label">Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="admin-table-card">
+                <div class="admin-table-header">
+                    <h3><i class="fas fa-list"></i> All Orders</h3>
+                    <button class="btn btn-outline btn-sm" onclick="loadAdminData()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>VPN Package</th>
+                                <th>Sim Package</th>
+                                <th>Device ID</th>
+                                <th>Slip</th>
+                                <th>Status</th>
+                                <th>Config</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text-muted);">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Registered Users Table -->
+            <div class="admin-table-card" style="margin-top:24px;">
+                <div class="admin-table-header">
+                    <h3><i class="fas fa-users"></i> Registered Users</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Joined</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr><td colspan="3" style="text-align:center;padding:40px;color:var(--text-muted);">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Config Upload Modal -->
+<div class="modal-overlay" id="configModal" style="display:none;">
+    <div class="modal-card">
+        <div class="modal-icon"><i class="fas fa-file-arrow-up"></i></div>
+        <h3>Upload Config File</h3>
+        <p>Upload a config file for: <strong id="configUserName"></strong></p>
+        <input type="hidden" id="configOrderId">
+        <div class="form-group" style="margin:16px 0;">
+            <label for="configFile">Select Config File</label>
+            <input type="file" id="configFile" class="form-input" style="padding:10px;">
+        </div>
+        <button class="btn btn-primary btn-block" onclick="uploadConfigFile()">
+            <i class="fas fa-upload"></i> Upload & Assign
+        </button>
+        <button class="btn btn-ghost btn-block" onclick="closeConfigModal()">Cancel</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ============================================================
+   ADMIN PANEL — Uses same CONFIG as app.js
+   ============================================================ */
+
+// ===== CONFIGURATION — MUST MATCH app.js =====
+const CONFIG = {
+    SUPABASE_URL: 'YOUR_SUPABASE_URL',
+    SUPABASE_ANON_KEY: 'YOUR_SUPABASE_ANON_KEY',
+    ADMIN_EMAIL: 'your-admin@email.com',
+    WHATSAPP_NUMBER: '94724212983',
+};
+
+const { createClient } = supabase;
+const db = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+
+// ===== Toast Notification =====
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    const icons = { success: 'check-circle', error: 'exclamation-circle', info: 'info-circle' };
+    toast.innerHTML = `<i class="fas fa-${icons[type] || 'info-circle'}"></i> ${message}`;
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
+}
+
+// ===== Particles Background =====
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof particlesJS !== 'undefined') {
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 40, density: { enable: true, value_area: 1000 } },
+                color: { value: ['#00e5ff', '#ff9f1c'] },
+                shape: { type: 'circle' },
+                opacity: { value: 0.3, random: true },
+                size: { value: 2, random: true },
+                line_linked: { enable: true, distance: 150, color: '#00e5ff', opacity: 0.1, width: 1 },
+                move: { enable: true, speed: 0.8, direction: 'none', random: true, out_mode: 'out' }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: { onhover: { enable: false }, onclick: { enable: false }, resize: true }
+            },
+            retina_detect: true
+        });
+    }
+});
+
+// ===== Auth Check =====
+async function checkAdmin() {
+    const { data: { session } } = await db.auth.getSession();
+    if (!session) {
+        window.location.href = 'index.html';
+        return;
+    }
+    const email = session.user.email;
+    document.getElementById('adminEmail').textContent = email;
+
+    if (email !== CONFIG.ADMIN_EMAIL) {
+        document.getElementById('notAdmin').style.display = 'flex';
+        document.getElementById('adminDashboard').style.display = 'none';
+        return;
+    }
+
+    document.getElementById('notAdmin').style.display = 'none';
+    document.getElementById('adminDashboard').style.display = 'block';
+    loadAdminData();
+}
+
+async function handleLogout() {
+    await db.auth.signOut();
+    window.location.href = 'index.html';
+}
+
+// ===== Load Admin Data =====
+async function loadAdminData() {
+    // Load orders
+    const { data: orders, error: orderErr } = await db
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (orderErr) {
+        showToast('Error loading orders: ' + orderErr.message, 'error');
+        return;
+    }
+
+    // Load users
+    const { data: users, error: userErr } = await db
+        .from('users')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (userErr) {
+        showToast('Error loading users: ' + userErr.message, 'error');
+        return;
+    }
+
+    // Update stats
+    document.getElementById('totalUsers').textContent = users ? users.length : 0;
+    document.getElementById('totalOrders').textContent = orders ? orders.length : 0;
+    document.getElementById('pendingOrders').textContent = orders ? orders.filter(o => o.status === 'pending').length : 0;
+    document.getElementById('activeOrders').textContent = orders ? orders.filter(o => o.status === 'active').length : 0;
+
+    // Render orders table
+    const tbody = document.getElementById('ordersTableBody');
+    if (!orders || orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text-muted);">No orders yet.</td></tr>';
+    } else {
+        tbody.innerHTML = orders.map(o => `
+            <tr>
+                <td>${new Date(o.created_at).toLocaleDateString()}</td>
+                <td>${o.first_name || ''} ${o.last_name || ''}</td>
+                <td style="font-size:0.8rem;">${o.email || ''}</td>
+                <td><span class="badge badge-package">${o.vpn_package || ''}</span></td>
+                <td style="font-size:0.8rem;">${o.sim_package || ''}</td>
+                <td style="font-size:0.8rem;">${o.device_id || '—'}</td>
+                <td>${o.slip_url ? `<a href="${o.slip_url}" target="_blank" class="btn btn-outline btn-xs"><i class="fas fa-image"></i> View</a>` : '—'}</td>
+                <td><span class="badge badge-${o.status === 'active' ? 'success' : o.status === 'rejected' ? 'danger' : 'warning'}">${o.status || 'pending'}</span></td>
+                <td>${o.config_url ? `<a href="${o.config_url}" target="_blank" class="btn btn-outline btn-xs"><i class="fas fa-download"></i> Download</a>` : '<span style="color:var(--text-muted);">No config</span>'}</td>
+                <td>
+                    <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                        <button class="btn btn-primary btn-xs" onclick="openConfigModal('${o.id}', '${(o.first_name || '')} ${(o.last_name || '')}')"><i class="fas fa-upload"></i></button>
+                        <button class="btn btn-xs" style="background:var(--success);color:#000;" onclick="updateOrderStatus('${o.id}', 'active')"><i class="fas fa-check"></i></button>
+                        <button class="btn btn-xs" style="background:var(--danger);color:#fff;" onclick="updateOrderStatus('${o.id}', 'rejected')"><i class="fas fa-times"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // Render users table
+    const ubody = document.getElementById('usersTableBody');
+    if (!users || users.length === 0) {
+        ubody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:40px;color:var(--text-muted);">No users yet.</td></tr>';
+    } else {
+        ubody.innerHTML = users.map(u => `
+            <tr>
+                <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                <td>${u.first_name || ''} ${u.last_name || ''}</td>
+                <td style="font-size:0.85rem;">${u.email || ''}</td>
+            </tr>
+        `).join('');
+    }
+}
+
+// ===== Config Upload =====
+function openConfigModal(orderId, userName) {
+    document.getElementById('configOrderId').value = orderId;
+    document.getElementById('configUserName').textContent = userName;
+    document.getElementById('configFile').value = '';
+    document.getElementById('configModal').style.display = 'flex';
+}
+
+function closeConfigModal() {
+    document.getElementById('configModal').style.display = 'none';
+}
+
+async function uploadConfigFile() {
+    const orderId = document.getElementById('configOrderId').value;
+    const fileInput = document.getElementById('configFile');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        showToast('Please select a config file.', 'error');
+        return;
+    }
+
+    showToast('Uploading config file...', 'info');
+
+    const filePath = `configs/${orderId}_${Date.now()}_${file.name}`;
+    const { error: uploadErr } = await db.storage
+        .from('configs')
+        .upload(filePath, file);
+
+    if (uploadErr) {
+        showToast('Upload failed: ' + uploadErr.message, 'error');
+        return;
+    }
+
+    const { data: urlData } = db.storage.from('configs').getPublicUrl(filePath);
+    const configUrl = urlData.publicUrl;
+
+    const { error: updateErr } = await db
+        .from('orders')
+        .update({ config_url: configUrl, status: 'active' })
+        .eq('id', orderId);
+
+    if (updateErr) {
+        showToast('Failed to update order: ' + updateErr.message, 'error');
+        return;
+    }
+
+    showToast('Config uploaded and assigned successfully!', 'success');
+    closeConfigModal();
+    loadAdminData();
+}
+
+// ===== Update Order Status =====
+async function updateOrderStatus(orderId, status) {
+    const { error } = await db
+        .from('orders')
+        .update({ status })
+        .eq('id', orderId);
+
+    if (error) {
+        showToast('Failed to update status: ' + error.message, 'error');
+        return;
+    }
+
+    showToast(`Order status updated to ${status}.`, 'success');
+    loadAdminData();
+}
+
+// ===== Init =====
+checkAdmin();
+</script>
+</body>
+</html>
