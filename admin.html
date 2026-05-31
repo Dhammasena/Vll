@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Night Owl VPN — Limitless Internet</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Animated Background -->
+    <div id="particles-js"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <!-- ⚠️ REPLACE THIS SRC with your DIRECT image URL from ImgBB (right-click image → copy image address) -->
+            <img src="https://i.ibb.co/39zW1Q3H/logo.png" 
+                 alt="Night Owl VPN" 
+                 class="logo-img" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+            <div class="logo-fallback" style="display:none;">
+                <i class="fas fa-owl"></i>
+                <span>Night Owl VPN</span>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="#pricing">Pricing</a>
+            <a href="#networks">Networks</a>
+            <a href="#payment">Payment</a>
+            <button id="login-btn" class="btn-glow" onclick="signInWithGoogle()">
+                <i class="fab fa-google"></i> Login with Google
+            </button>
+            <div id="user-menu" class="hidden">
+                <span id="user-email"></span>
+                <a href="admin.html" id="admin-link" class="hidden btn-admin"><i class="fas fa-shield-alt"></i> Admin</a>
+                <button onclick="signOut()" class="btn-outline"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+        <button class="mobile-toggle" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu hidden">
+        <a href="#pricing">Pricing</a>
+        <a href="#networks">Networks</a>
+        <a href="#payment">Payment</a>
+        <div id="mobile-auth"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge"><i class="fas fa-bolt"></i> High-Quality VPS Infrastructure</div>
+            <h1 class="hero-title">Experience <span class="text-gradient">Limitless Internet</span> with Night Owl VPN</h1>
+            <p class="hero-subtitle">We provide this service using High-Quality VPS for maximum speed and security. Browse without boundaries.</p>
+            <div class="hero-cta">
+                <a href="#pricing" class="btn-primary btn-lg">View Packages <i class="fas fa-arrow-right"></i></a>
+                <a href="#guarantee" class="btn-outline btn-lg">30-Day Guarantee</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="glow-orb"></div>
+            <div class="glow-orb orb-2"></div>
+        </div>
+    </section>
+
+    <!-- Guarantee Section -->
+    <section id="guarantee" class="guarantee">
+        <div class="container">
+            <div class="guarantee-card glass-card">
+                <div class="guarantee-icon"><i class="fas fa-shield-halved"></i></div>
+                <h2>100% Guarantee for 30 Days</h2>
+                <p>Our data packages are valid for <strong>30 days</strong> and must be renewed. To get a config, you must have an active base data package.</p>
+                <div class="guarantee-highlight">
+                    <i class="fas fa-infinity"></i>
+                    <span>With the <strong>Unlimited package</strong>, enjoy <span class="text-gold">zero speed limits</span> and <span class="text-gold">no GB limits!</span></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Pricing Plans</span>
+                <h2>Choose Your <span class="text-gradient">Data Package</span></h2>
+                <p>Affordable high-speed VPN packages tailored for Sri Lankan networks</p>
+            </div>
+            <div class="pricing-grid">
+                <!-- 100GB -->
+                <div class="pricing-card glass-card">
+                    <div class="pricing-badge">Starter</div>
+                    <h3>100GB</h3>
+                    <div class="pricing-price">Rs. <span>200</span>/=</div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 30 Days Validity</li>
+                        <li><i class="fas fa-check"></i> High-Speed VPS</li>
+                        <li><i class="fas fa-check"></i> All Network Support</li>
+                        <li><i class="fas fa-check"></i> 1 Config File</li>
+                    </ul>
+                    <button onclick="scrollToOrder('100GB - Rs. 200/=')" class="btn-primary btn-block">Select Package</button>
+                </div>
+
+                <!-- 200GB -->
+                <div class="pricing-card glass-card popular">
+                    <div class="pricing-badge badge-popular">Most Popular</div>
+                    <h3>200GB</h3>
+                    <div class="pricing-price">Rs. <span>300</span>/=</div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 30 Days Validity</li>
+                        <li><i class="fas fa-check"></i> High-Speed VPS</li>
+                        <li><i class="fas fa-check"></i> All Network Support</li>
+                        <li><i class="fas fa-check"></i> 1 Config File</li>
+                    </ul>
+                    <button onclick="scrollToOrder('200GB - Rs. 300/=')" class="btn-primary btn-block">Select Package</button>
+                </div>
+
+                <!-- 300GB -->
+                <div class="pricing-card glass-card">
+                    <div class="pricing-badge">Advanced</div>
+                    <h3>300GB</h3>
+                    <div class="pricing-price">Rs. <span>400</span>/=</div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 30 Days Validity</li>
+                        <li><i class="fas fa-check"></i> High-Speed VPS</li>
+                        <li><i class="fas fa-check"></i> All Network Support</li>
+                        <li><i class="fas fa-check"></i> 1 Config File</li>
+                    </ul>
+                    <button onclick="scrollToOrder('300GB - Rs. 400/=')" class="btn-primary btn-block">Select Package</button>
+                </div>
+
+                <!-- Unlimited -->
+                <div class="pricing-card glass-card unlimited">
+                    <div class="pricing-badge badge-unlimited">Ultimate</div>
+                    <h3>Unlimited GB</h3>
+                    <div class="pricing-price">Rs. <span>500</span>/=</div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 30 Days Validity</li>
+                        <li><i class="fas fa-check"></i> <strong>Zero Speed Limits</strong></li>
+                        <li><i class="fas fa-check"></i> <strong>No GB Limits!</strong></li>
+                        <li><i class="fas fa-check"></i> Premium VPS Server</li>
+                    </ul>
+                    <button onclick="scrollToOrder('Unlimited GB - Rs. 500/=')" class="btn-primary btn-block">Select Package</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Networks Section -->
+    <section id="networks" class="networks">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Supported Networks</span>
+                <h2>Compatible <span class="text-gradient">Packages</span></h2>
+                <p>Select your network base package to get started</p>
+            </div>
+            <div class="networks-grid">
+                <div class="network-card glass-card">
+                    <div class="network-icon dialog"><i class="fas fa-signal"></i></div>
+                    <h3>Dialog SIM</h3>
+                    <p class="network-package">348 Package</p>
+                    <span class="network-type">Mobile Data</span>
+                </div>
+                <div class="network-card glass-card">
+                    <div class="network-icon dialog"><i class="fas fa-wifi"></i></div>
+                    <h3>Dialog Router</h3>
+                    <p class="network-package">Zoom Unlimited 724 Package</p>
+                    <span class="network-type">Broadband</span>
+                </div>
+                <div class="network-card glass-card">
+                    <div class="network-icon slt"><i class="fas fa-router"></i></div>
+                    <h3>SLT Router</h3>
+                    <p class="network-package">Zoom/Netflix Unlimited Package</p>
+                    <span class="network-type">Broadband</span>
+                </div>
+                <div class="network-card glass-card">
+                    <div class="network-icon airtel"><i class="fab fa-youtube"></i></div>
+                    <h3>Airtel Old SIM</h3>
+                    <p class="network-package">YouTube 260 Unlimited Package</p>
+                    <span class="network-type">Mobile Data</span>
+                </div>
+                <div class="network-card glass-card">
+                    <div class="network-icon airtel"><i class="fab fa-tiktok"></i></div>
+                    <h3>Airtel New SIM</h3>
+                    <p class="network-package">TikTok 997 Unlimited Package</p>
+                    <span class="network-type">Mobile Data</span>
+                </div>
+                <div class="network-card glass-card">
+                    <div class="network-icon mobitel"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Mobitel SIM</h3>
+                    <p class="network-package">222 Zoom Package</p>
+                    <span class="network-type android">Android Only</span>
+                </div>
+                <div class="network-card glass-card">
+                    <div class="network-icon hutch"><i class="fas fa-broadcast-tower"></i></div>
+                    <h3>Hutch</h3>
+                    <p class="network-package">Zoom 224 Package</p>
+                    <span class="network-type">Mobile Data</span>
+                </div>
+            </div>
+            <div class="network-note glass-card">
+                <i class="fas fa-info-circle"></i>
+                <p>Configs are available for packages <strong>not on this list</strong>, but speed will be limited. Contact us on WhatsApp for custom package support.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Section -->
+    <section id="payment" class="payment">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Payment Methods</span>
+                <h2>Secure <span class="text-gradient">Payment</span> Options</h2>
+            </div>
+            <div class="payment-grid">
+                <div class="payment-card glass-card bank-card">
+                    <div class="payment-header">
+                        <i class="fas fa-university"></i>
+                        <h3>Bank Transfer</h3>
+                    </div>
+                    <div class="payment-details">
+                        <div class="detail-row">
+                            <span class="label">Bank</span>
+                            <span class="value">Sampath Bank</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Account No</span>
+                            <span class="value copy-text" onclick="copyToClipboard('111852976973')">1118 5297 6973 <i class="fas fa-copy"></i></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Name</span>
+                            <span class="value">GJD Dilshan</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Branch</span>
+                            <span class="value">Baddegama</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="payment-card glass-card ezcash-card">
+                    <div class="payment-header">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>eZ Cash</h3>
+                    </div>
+                    <div class="payment-details">
+                        <div class="detail-row">
+                            <span class="label">Number</span>
+                            <span class="value copy-text" onclick="copyToClipboard('0763420752')">076 342 0752 <i class="fas fa-copy"></i></span>
+                        </div>
+                        <div class="detail-row warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Please add <strong>Rs. 20 extra</strong> if using eZ Cash</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order / Dashboard Section -->
+    <section id="order" class="order-section">
+        <div class="container">
+            <!-- Not Logged In -->
+            <div id="auth-gate" class="auth-gate glass-card">
+                <div class="auth-gate-icon"><i class="fas fa-lock"></i></div>
+                <h2>Login Required</h2>
+                <p>You must log in with your Google Account to place an order and access your dashboard.</p>
+                <button onclick="signInWithGoogle()" class="btn-primary btn-lg">
+                    <i class="fab fa-google"></i> Login with Google to Order
+                </button>
+            </div>
+
+            <!-- Logged In Dashboard -->
+            <div id="dashboard" class="hidden">
+                <div class="section-header">
+                    <span class="section-tag">User Dashboard</span>
+                    <h2>Welcome, <span id="display-name" class="text-gradient">User</span></h2>
+                </div>
+
+                <!-- Order Form -->
+                <div class="order-form-container glass-card">
+                    <h3><i class="fas fa-shopping-cart"></i> Place Your Order</h3>
+                    <form id="order-form" onsubmit="handleOrderSubmit(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" name="first-name" required placeholder="Enter first name">
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" name="last-name" required placeholder="Enter last name">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Desired VPN Data Package</label>
+                            <select name="package" id="package-select" required>
+                                <option value="">Select a package...</option>
+                                <option value="100GB - Rs. 200/=">100GB — Rs. 200/=</option>
+                                <option value="200GB - Rs. 300/=">200GB — Rs. 300/=</option>
+                                <option value="300GB - Rs. 400/=">300GB — Rs. 400/=</option>
+                                <option value="Unlimited GB - Rs. 500/=">Unlimited GB — Rs. 500/=</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Current SIM & Base Data Package</label>
+                            <select name="sim-package" id="sim-package" required onchange="handleSimChange()">
+                                <option value="">Select your network...</option>
+                                <option value="Dialog SIM - 348 Package">Dialog SIM — 348 Package</option>
+                                <option value="Dialog Router - Zoom Unlimited 724">Dialog Router — Zoom Unlimited 724</option>
+                                <option value="SLT Router - Zoom/Netflix Unlimited">SLT Router — Zoom/Netflix Unlimited</option>
+                                <option value="Airtel Old SIM - YouTube 260 Unlimited">Airtel Old SIM — YouTube 260 Unlimited</option>
+                                <option value="Airtel New SIM - TikTok 997 Unlimited">Airtel New SIM — TikTok 997 Unlimited</option>
+                                <option value="Mobitel SIM - 222 Zoom Package">Mobitel SIM — 222 Zoom Package</option>
+                                <option value="Hutch - Zoom 224 Package">Hutch — Zoom 224 Package</option>
+                                <option value="Other Package">Other Package (Speed Limited)</option>
+                            </select>
+                        </div>
+
+                        <!-- Conditional Field -->
+                        <div id="device-id-field" class="form-group hidden conditional-field">
+                            <label><i class="fas fa-fingerprint"></i> HttpInjector App Device ID</label>
+                            <input type="text" name="device-id" placeholder="Required for Mobitel 222 Package">
+                            <small>This is required only for Mobitel 222 Zoom Package on Android</small>
+                        </div>
+
+                        <div class="form-group file-upload">
+                            <label><i class="fas fa-receipt"></i> Upload Payment Slip</label>
+                            <div class="file-dropzone" id="dropzone" onclick="document.getElementById('payment-slip').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Click to upload or drag & drop</span>
+                                <small>Supported: JPG, PNG, PDF (Max 5MB)</small>
+                                <input type="file" id="payment-slip" name="payment-slip" accept="image/*,.pdf" required onchange="handleFileSelect(this)">
+                            </div>
+                            <div id="file-preview" class="file-preview hidden"></div>
+                        </div>
+
+                        <div class="form-submit">
+                            <button type="submit" id="submit-btn" class="btn-primary btn-lg btn-glow">
+                                <span class="btn-text"><i class="fab fa-whatsapp"></i> Submit Order & Open WhatsApp</span>
+                                <span class="btn-loader hidden"><i class="fas fa-spinner fa-spin"></i> Processing...</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- My Orders -->
+                <div class="my-orders glass-card">
+                    <h3><i class="fas fa-history"></i> My Orders</h3>
+                    <div id="orders-list" class="orders-list">
+                        <p class="empty-state">No orders yet. Place your first order above!</p>
+                    </div>
+                </div>
+
+                <!-- My Configs -->
+                <div class="my-configs glass-card">
+                    <h3><i class="fas fa-download"></i> My Config Files</h3>
+                    <div id="configs-list" class="configs-list">
+                        <p class="empty-state">No config files available yet. Admin will upload them after verification.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Night Owl VPN</h3>
+                    <p>Secure. Fast. Limitless.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://wa.me/94724212983" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp Support</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p> Night Owl VPN. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="app.js"></script>
+    <script>
+        // Particles.js Configuration — Cyberpunk Theme
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 100, density: { enable: true, value_area: 800 } },
+                color: { value: ['#ff9500', '#00d4ff', '#ffffff', '#ffd700'] },
+                shape: { type: 'circle' },
+                opacity: { value: 0.6, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1 } },
+                size: { value: 2.5, random: true, anim: { enable: true, speed: 2, size_min: 0.1 } },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#ff9500',
+                    opacity: 0.15,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1.2,
+                    direction: 'none',
+                    random: true,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: { enable: true, mode: 'grab' },
+                    onclick: { enable: true, mode: 'push' },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
+    </script>
+</body>
+</html>
